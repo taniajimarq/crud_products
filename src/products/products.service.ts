@@ -19,6 +19,7 @@ export class ProductsService {
         data: createProductDto,
       });
     } catch (error) {
+      console.log(error)
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
           throw new ConflictException(
