@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   InternalServerErrorException,
@@ -49,16 +50,27 @@ export class ProductsService {
   }
 
   async update(id: number, updateProductDto: UpdateProductDto) {
-    const productFound = await this.prismaService.product.update({
-      where: {
-        id,
-      },
-      data: updateProductDto,
-    });
-    if (!productFound) {
-      throw new NotFoundException(`Product with id ${id} not found`);
+    
+    try {
+      if(!updateProductDto){
+        throw new BadRequestException('No hay datos')
+      }
+      const productFound = await this.prismaService.product.update({
+        where: {
+          id,
+        },
+        data: updateProductDto,
+      });
+      if (!productFound) {
+        throw new NotFoundException(`Product with id ${id} not found`);
+      }
+      
+      return updateProductDto;  
+    } catch (error) {
+      console.log(error)
+      throw new NotFoundException('Algo salio mal')
     }
-    return updateProductDto;
+    
   }
 
   async remove(id: number) {

@@ -1,6 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import * as morgan from 'morgan';
+
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,7 +18,8 @@ async function bootstrap() {
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);
 
-  app.enableCors(); //Permite peticiónes de un servidor distinto
+  app.enableCors({origin:'*'}); //Permite peticiónes de un servidor distinto
+  app.use(morgan('short'));
 
   await app.listen(process.env.PORT ?? 4001);
 }
